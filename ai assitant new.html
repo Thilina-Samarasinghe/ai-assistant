@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Assistant</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #121212;
+            color: white;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #1e1e1e;
+            padding: 15px 20px;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+        }
+        .navbar .logo {
+            font-size: 20px;
+            font-weight: bold;
+            color: #007bff;
+        }
+        .navbar .nav-links {
+            display: flex;
+            gap: 20px;
+        }
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            font-size: 16px;
+        }
+        .chat-container {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .chat-box-wrapper {
+            width: 650px;
+            max-height: 650px;
+            background: #1e1e1e;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
+            display: flex;
+            flex-direction: column;
+            border: 1px solid #444;
+        }
+        .chat-box {
+            flex: 1;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            padding: 10px;
+            border-radius: 10px;
+            background: #222;
+        }
+        .message {
+            padding: 12px;
+            margin: 5px 0;
+            border-radius: 8px;
+            max-width: 80%;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        .user {
+            align-self: flex-end;
+            background: #007bff;
+            color: white;
+        }
+        .bot {
+            align-self: flex-start;
+            background: #444;
+            color: white;
+        }
+        .typing {
+            align-self: flex-start;
+            background: #444;
+            font-style: italic;
+            color: #bbb;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .input-area {
+            display: flex;
+            background: #222;
+            padding: 10px;
+            border-radius: 10px;
+            margin-top: 10px;
+        }
+        input {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            outline: none;
+            font-size: 16px;
+            background: #333;
+            color: white;
+        }
+        button {
+            padding: 12px;
+            margin-left: 5px;
+            border: none;
+            background: #007bff;
+            color: white;
+            cursor: pointer;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+        .footer {
+            text-align: center;
+            padding: 10px;
+            background: #1e1e1e;
+            color: white;
+        }
+
+        /* About page styles */
+        .about-page, .contact-page {
+            display: none;
+            background: #121212;
+            padding: 40px;
+            flex-direction: column;
+            align-items: center;
+        }
+        .about-page.active, .contact-page.active {
+            display: flex;
+        }
+        .about-header, .contact-header {
+            color: #007bff;
+            font-size: 32px;
+            margin-bottom: 20px;
+        }
+        .about-content, .contact-content {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+        }
+        .about-image, .contact-image {
+            width: 150px;
+            height: 150px;
+            border-radius: 10px;
+            background: #333;
+            margin-right: 20px;
+            background-size: contain; 
+        }
+        .about-description, .contact-description {
+            color: white;
+            font-size: 18px;
+            max-width: 500px;
+        }
+        .contact-links {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .contact-links a {
+            color: #007bff;
+            font-size: 18px;
+            text-decoration: none;
+        }
+        .contact-links a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <div class="logo">THILINA</div>
+        <div class="nav-links">
+            <a href="#" onclick="showAbout()">About</a>
+            <a href="#" onclick="showContact()">Contact</a>
+        </div>
+    </div>
+    
+    <div class="chat-container">
+        <div class="chat-box-wrapper">
+            <div class="chat-box" id="chat-box"></div>
+            <div class="input-area">
+                <input type="text" id="user-input" placeholder="Ask me anything..." onkeypress="handleKeyPress(event)">
+                <button id="send-button" onclick="sendMessage()">Send</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- About page content -->
+    <div class="about-page" id="about-page">
+        <div class="about-header">About</div>
+        <div class="about-content">
+            <div class="about-image" style="background-image: url('https://img.playbook.com/itrCuSqXZCbZrotzeMrM8ar2MRrkjLV-vWyFwvjayMg/Z3M6Ly9wbGF5Ym9v/ay1hc3NldHMtcHVi/bGljLzA1ZjExMzlj/LTIyYTktNDFlNi1i/NzgwLTJjYmI2Yzg1/NGI4NQ');"></div>
+            <div class="about-description">
+                AI-powered chat assistant built with DeepSeek AI's free API, providing smart and responsive interactions. Developed by Thilina Samarasinghe.
+            </div>
+        </div>
+    </div>
+    
+    <!-- Contact page content -->
+    <div class="contact-page" id="contact-page">
+        <div class="contact-header">Contact</div>
+        <div class="contact-content">
+            <div class="contact-image" style="background-image: url('https://img.playbook.com/Y83QkHndLNDjp76WWiZ6IspTMTig4Y3r5l4Jphz2dJQ/Z3M6Ly9wbGF5Ym9v/ay1hc3NldHMtcHVi/bGljL2I3YjgyN2Ji/LTU4NzUtNGU1Zi05/ZTlhLTkwYzk2YThl/MjIxOA');"></div>
+            <div class="contact-description">
+                You can reach me through the following:
+                <div class="contact-links">
+                    <a href="https://github.com/Thilina-Samarasinghe" target="_blank">GitHub</a>
+                    <a href="mailto:thilina.bandara623@gmail.com">Email: thilina.bandara623@gmail.com</a>
+                    <a href="tel:+94761985735">Phone: 0761985735</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">&copy; 2025 Thilina Samarasinghe. All rights reserved.</div>
+    
+    <script>
+        const API_KEY = "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";
+        const BASE_URL = "https://openrouter.ai/api/v1";
+        const MODEL_NAME = "deepseek/deepseek-r1:free";
+
+        async function sendMessage() {
+            const inputField = document.getElementById('user-input');
+            const chatBox = document.getElementById('chat-box');
+            const message = inputField.value.trim();
+            if (!message) return;
+            
+            appendMessage('user', message);
+            inputField.value = '';
+            
+            const typingIndicator = document.createElement('div');
+            typingIndicator.classList.add('message', 'typing');
+            typingIndicator.textContent = "Thilina is typing...";
+            chatBox.appendChild(typingIndicator);
+            chatBox.scrollTop = chatBox.scrollHeight;
+
+            try {
+                const response = await fetch(BASE_URL + "/chat/completions", {
+                    method: "POST",
+                    headers: { 
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${API_KEY}`
+                    },
+                    body: JSON.stringify({
+                        model: MODEL_NAME,
+                        messages: [{ role: "user", content: message }]
+                    })
+                });
+                const data = await response.json();
+                typingIndicator.textContent = data.choices?.[0]?.message?.content || "Sorry, I am unable to respond.";
+                typingIndicator.classList.remove('typing');
+                typingIndicator.classList.add('bot');
+            } catch (error) {
+                typingIndicator.textContent = "Error: Unable to fetch response.";
+                typingIndicator.classList.remove('typing');
+                typingIndicator.classList.add('bot');
+            }
+        }
+
+        function appendMessage(sender, text) {
+            const chatBox = document.getElementById('chat-box');
+            const messageDiv = document.createElement('div');
+            messageDiv.classList.add('message', sender);
+            messageDiv.textContent = text;
+            chatBox.appendChild(messageDiv);
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        function handleKeyPress(event) {
+            if (event.key === "Enter") {
+                sendMessage();
+            }
+        }
+
+        function showAbout() {
+            const aboutPage = document.getElementById('about-page');
+            const contactPage = document.getElementById('contact-page');
+            aboutPage.classList.toggle('active');
+            contactPage.classList.remove('active');
+        }
+
+        function showContact() {
+            const aboutPage = document.getElementById('about-page');
+            const contactPage = document.getElementById('contact-page');
+            contactPage.classList.toggle('active');
+            aboutPage.classList.remove('active');
+        }
+    </script>
+</body>
+</html>
